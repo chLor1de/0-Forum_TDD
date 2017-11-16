@@ -17,7 +17,6 @@
                                 <label for="title">Title:</label>
                                 <input class="form-control" id="title" type="text" name="title">
                             </div>
-
                             <div class="form-group">
                                 <label for="body">Title:</label>
                                 <textarea class="form-control" name="body" id="body" rows="8"></textarea>

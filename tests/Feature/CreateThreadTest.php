@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateThreadTest extends TestCase
 {
     use DatabaseMigrations;
+
     /** @test */
     public function guest_may_not_create_threads()
     {
@@ -34,13 +34,24 @@ class CreateThreadTest extends TestCase
         $this->get($response->headers->get('Location'))
             ->assertSee($thread->title)
             ->assertSee($thread->body);
-     }
-     /** @test */
-     public function a_thread_requires_a_title()
-     {
-         $this->publishThread(['title' => null])
-             ->assertSessionHasErrors('title');
-     }
+    }
+
+    /** @test */
+    public function a_thread_requires_a_title()
+    {
+        $this->publishThread(['title' => null])
+            ->assertSessionHasErrors('title');
+    }
+
+    public function publishThread($overrides = [])
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $thread = make('App\Thread', $overrides);
+
+        return $this->post('/threads', $thread->toArray());
+
+    }
 
     /** @test */
     public function a_thread_requires_a_body()
@@ -61,16 +72,34 @@ class CreateThreadTest extends TestCase
 
     }
 
+    /** @test */
+    public function guests_cannot_delete_threads()
+    {
+        $this->withExceptionHandling();
+        $thread = create('App\Thread');
+        $response = $this->DELETE($thread->path());
+        $response->assertRedirect('/login');
+    }
+    /** @test */
+    public function threads_may_only_be_deleted_who_has_permission()
+    {
 
-    public function publishThread($overrides =[])
-      {
-          $this->withExceptionHandling()->signIn();
+     }
 
-          $thread = make('App\Thread', $overrides);
 
-          return $this->post('/threads', $thread->toArray());
+    /** @test */
+    public function a_thread_can_be_deletes()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $reply = create('App\Reply', ['thread_id' => $thread->id]);
 
-      }
+        $response = $this->json('DELETE', $thread->path());
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+
+    }
 
 
 }

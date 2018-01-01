@@ -3,8 +3,10 @@ namespace App;
 use App\Filters\ThreadFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+
 class Thread extends Model
 {
+    use RecordsActivity;
     /**
      * Don't auto-apply mass assignment protection.
      *
@@ -23,6 +25,7 @@ class Thread extends Model
         static::deleting(function ($thread){
             $thread->replies()->delete();
         });
+
     }
 
     /**

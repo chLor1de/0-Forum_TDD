@@ -1,5 +1,7 @@
 <?php
+
 namespace App;
+
 use App\Filters\ThreadFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,15 +17,15 @@ class Thread extends Model
     protected $guarded = [];
     protected $with = ['creator', 'channel'];
 
-    protected static function  boot()
+    protected static function boot()
     {
         parent::boot();
 
         static::addGlobalScope('replyCount', function ($builder) {
             $builder->withCount('replies');
         });
-        static::deleting(function ($thread){
-            $thread->replies()->delete();
+        static::deleting(function ($thread) {
+            $thread->replies->each->delete();
         });
 
     }
@@ -47,6 +49,7 @@ class Thread extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     /**
      * A thread is assigned a channel.
      *
@@ -56,15 +59,7 @@ class Thread extends Model
     {
         return $this->belongsTo(Channel::class);
     }
-    /**
-     * A thread may have many replies.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function replies()
-    {
-        return $this->hasMany(Reply::class);
-    }
+
     /**
      * Add a reply to the thread.
      *
@@ -74,10 +69,21 @@ class Thread extends Model
     {
         $this->replies()->create($reply);
     }
+
+    /**
+     * A thread may have many replies.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
     /**
      * Apply all relevant thread filters.
      *
-     * @param  Builder       $query
+     * @param  Builder $query
      * @param  ThreadFilters $filters
      * @return Builder
      */

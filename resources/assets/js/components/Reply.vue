@@ -1,4 +1,3 @@
-
 <script>
     export default {
         props: ['attributes'],
@@ -15,6 +14,13 @@
                 });
                 this.editing = false;
                 flash('updated');
+            },
+            destroy() {
+                axios.delete('/replies/' + this.attributes.id);
+                $(this.$el).fadeOut(300, () => {
+                    flash('Reply deleted');
+
+                });
             }
         }
 

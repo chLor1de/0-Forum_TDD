@@ -43300,7 +43300,7 @@ exports = module.exports = __webpack_require__(44)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -43311,7 +43311,6 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['attributes'],
@@ -43329,6 +43328,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
             this.editing = false;
             flash('updated');
+        },
+        destroy: function destroy() {
+            axios.delete('/replies/' + this.attributes.id);
+            $(this.$el).fadeOut(300, function () {
+                flash('Reply deleted');
+            });
         }
     }
 

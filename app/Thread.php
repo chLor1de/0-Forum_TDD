@@ -60,33 +60,23 @@ class Thread extends Model
         return $this->belongsTo(Channel::class);
     }
 
+
     /**
-     * Add a reply to the thread.
-     *
      * @param $reply
+     * @return Model
      */
     public function addReply($reply)
     {
-        $this->replies()->create($reply);
+        return $this->replies()->create($reply);
     }
 
-    /**
-     * A thread may have many replies.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+
     public function replies()
     {
         return $this->hasMany(Reply::class);
     }
 
-    /**
-     * Apply all relevant thread filters.
-     *
-     * @param  Builder $query
-     * @param  ThreadFilters $filters
-     * @return Builder
-     */
+
     public function scopeFilter($query, ThreadFilters $filters)
     {
         return $filters->apply($query);

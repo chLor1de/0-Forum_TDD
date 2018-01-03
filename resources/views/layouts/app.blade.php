@@ -13,11 +13,31 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
-        .level { display: flex; align-items: center; }
-        .flex { flex: 1;}
-        .mr-1 { margin-right: 1em;}
-        [v-cloak] { display: none;}
+        .level {
+            display: flex;
+            align-items: center;
+        }
+
+        .flex {
+            flex: 1;
+        }
+
+        .mr-1 {
+            margin-right: 1em;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
     </style>
+
+    <script charset="utf-8">
+        window.App = {!! json_encode([
+            'signedIn' => Auth::check(),
+            'user' => Auth::user(),
+        ]) !!};
+    </script>
+
 </head>
 <body style="padding-bottom: 100px">
 <div id="app">

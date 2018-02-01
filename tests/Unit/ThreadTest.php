@@ -2,7 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Notifications\ThreadWasUpdated;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ThreadTest extends TestCase
@@ -49,6 +51,19 @@ class ThreadTest extends TestCase
 
         $this->assertCount(1, $this->thread->replies);
     }
+    /** @test */
+    public function a_thread_notifies_subs_if_a_reply_is_added()
+    {
+        Notification::fake();
+        $this->signIn();
+        $this->thread->subscribe();
+        $this->thread->addReply([
+            'body' => 'Foobar',
+            'user_id' => 1
+        ]);
+        Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
+     }
+    
 
     /** @test */
     public function a_thread_belongs_to_a_channel()

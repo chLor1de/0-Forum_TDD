@@ -97,6 +97,18 @@ class ParticipateInForumTest extends TestCase
             ->patch("/replies/{$reply->id}")
             ->assertStatus(403);
     }
+    /** @test */
+    public function replies_that_contain_spam_wont_get_saved()
+    {
+           $this->signIn();
+           $thread = create('App\Thread');
+           $reply = make('App\Reply', [
+              'body' => 'Yahoo customer support'
+           ]);
+           $this->expectException(\Exception::class);
+           $this->post($thread->path() . '/replies', $reply->toArray());
+     }
+    
 
 
 
